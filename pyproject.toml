@@ -1,0 +1,20 @@
+[project]
+name = "aioduck"
+version = "2025.8.25"
+description = "Python asyncio bindings for DuckDB"
+authors = [{ name = "fairydream", email = "cn.fairydream@outlook.com" }]
+readme = { file = "README.md", content-type = "text/markdown" }
+license-files = ["LICENSE"]
+requires-python = ">=3.11, <4.0"
+dependencies = [
+    "polars",
+    "pyarrow",
+    "duckdb",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
