@@ -1,9 +1,10 @@
 [project]
 name = "aioduck"
-version = "2025.8.20"
+version = "2025.8.21"
 description = "Python asyncio bindings for DuckDB"
 authors = [{ name = "fairydream", email = "cn.fairydream@outlook.com" }]
 readme = { file = "README.md", content-type = "text/markdown" }
+license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.11, <4.0"
 dependencies = [
