@@ -7,7 +7,7 @@ all the standard connection and cursor methods, plus context managers
 for automatically closing connections and cursors:
 
 ``` python
-from aio_duckdb import AsyncConnection
+from aioduck import AsyncConnection
 
 async with AsyncConnection(...) as conn:
     await conn.execute("INSERT INTO some_table ...")
@@ -22,7 +22,7 @@ async with AsyncConnection(...) as conn:
 It can also be used in the traditional, procedural manner:
 
 ``` python
-from aio_duckdb import AsyncConnection
+from aioduck import AsyncConnection
 
 db = await AsyncConnection(...)
 await db.agent.start()
