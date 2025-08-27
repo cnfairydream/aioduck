@@ -1,6 +1,6 @@
 [project]
 name = "aioduck"
-version = "2025.8.25"
+version = "2025.8.20"
 description = "Python asyncio bindings for DuckDB"
 authors = [{ name = "fairydream", email = "cn.fairydream@outlook.com" }]
 readme = { file = "README.md", content-type = "text/markdown" }
