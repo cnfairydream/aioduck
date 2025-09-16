@@ -26,14 +26,12 @@ It can also be used in the traditional, procedural manner:
 from aioduck import AsyncConnection
 
 db = await AsyncConnection(...)
-await db.agent.start()
 cursor = db.cursor()
 await db.execute('SELECT * FROM some_table')
 row = await cursor.fetchone()
 rows = await cursor.fetchall()
 await cursor.close()
 await db.close()
-await db.agent.stop()
 ```
 
 ## Install
