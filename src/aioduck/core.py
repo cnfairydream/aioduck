@@ -11,36 +11,36 @@ from duckdb import DuckDBPyConnection
 class Agent:
 
     def __init__(self):
-        self._worker = None
-        self._running = False
-        self._queue = Queue()
-        self._loop = asyncio.get_running_loop()
+        self.worker = None
+        self.running = False
+        self.queue = Queue()
+        self.loop = asyncio.get_running_loop()
 
     async def submit(self, func: Callable, *args, **kwargs) -> Future:
-        future = self._loop.create_future()
-        await self._queue.put((future, func, args, kwargs))
+        future = self.loop.create_future()
+        await self.queue.put((future, func, args, kwargs))
         return future
 
     async def start(self):
-        if not self._running:
-            self._running = True
-            self._worker = asyncio.create_task(self.run())
+        if not self.running:
+            self.running = True
+            self.worker = asyncio.create_task(self.run())
 
     async def stop(self):
-        if self._running:
-            self._running = False
-            await self._worker
+        if self.running:
+            self.running = False
+            await self.worker
 
     async def run(self):
         while True:
-            if not self._running and self._queue.empty():
+            if not self.running and self.queue.empty():
                 break
 
-            elif self._running and self._queue.empty():
+            elif self.running and self.queue.empty():
                 await asyncio.sleep(0)
 
             else:
-                future, func, args, kwargs = await self._queue.get()
+                future, func, args, kwargs = await self.queue.get()
 
                 try:
                     result = await asyncio.to_thread(func, *args, **kwargs)
@@ -48,7 +48,7 @@ class Agent:
                 except BaseException as e:
                     future.set_exception(e)
 
-                self._queue.task_done()
+                self.queue.task_done()
 
 
 class AsyncConnection:
@@ -63,11 +63,17 @@ class AsyncConnection:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
-        await self.agent.stop()
+        
+        if self.agent.running:
+            await self.agent.stop()
 
     async def _execute(self, func, *args, **kwargs):
+        if not self.agent.running:
+            await self.agent.start
+            
         future = await self.agent.submit(func, *args, **kwargs)
         await future
+        
         return future.result()
 
     def cursor(self):
@@ -75,6 +81,9 @@ class AsyncConnection:
 
     async def close(self):
         await self._execute(self._connection.close)
+        
+        if self.agent.running:
+            await self.agent.stop()
 
     async def begin(self):
         await self._execute(self._connection.begin)
